@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Student List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #e0c29f; /* Warm brown background color */
+    }
+
+    .login-container {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 400px;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .form-group input {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .form-group input[type="checkbox"] {
+      width: auto;
+      margin-right: 5px;
+    }
+
+    .form-group label[for="pword"] {
+      margin-top: 10px; /* Adjust for checkbox alignment */
+    }
+
+    .show-password {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px 20px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #222;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Student List Login</h2>
+    <form method="post" action="/login">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="pword">Password</label>
+        <input type="password" name="pword" id="pword" class="form-control">
+        <div class="show-password">
+          <input type="checkbox" onclick="myFunction()"> Show Password
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Log In" class="btn">
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function myFunction() {
+      var x = document.getElementById("pword");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+  </script>
+</html>

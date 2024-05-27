@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="ie-edge">
+		<meta name="viewport" name="width=device-width,initial-scale=1.0">
+		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="../assets/css/w3.css">
+		<link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Montserrat'>
+		<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
+		<script src="../assets/js/jquery-3.7.1.min.js"></script>
+		<link rel="stylesheet" href="../assets/css/dataTables.dataTables.css" />
+  		<script src="../assets/js/dataTables.js"></script>
+		<title>Student List</title>
+	</head>
+	<style>
+		@font-face {
+			font-family: 'Lato';
+			src: url('../assets/css/Lato-Regular-bd03a2cc27.woff2') format('truetype');
+			font-weight: normal;
+			font-style: normal;
+		}
+
+		@font-face {
+			font-family: 'Lato';
+			src: url('../assets/css/Lato-Bold-cccb897485.woff2') format('truetype');
+			font-weight: bold;
+			font-style: normal;
+		}
+		
+		html,body{
+			font-family: 'Lato Extended','Lato',"Helvetica Neue",Helvetica,Arial,sans-serif!important;
+			color: #444444!important;
+			box-sizing: border-box;
+		}
+		.header {
+			background-color: #C4E1EB;
+		}
+		/* updated display and margin-top*/
+			.sidebar {
+				width: 160px; /* Adjust the width as needed */
+				background-color: #2c2c2c;
+				padding: 10px;
+				height: 100%;
+				position: absolute;
+				display: flex;
+				flex-direction: column;
+			}
+
+			/* Button styles */
+			.w3-button {
+				width: 100%;
+				text-align: left;
+				background-color: transparent;
+				border: none;
+			}
+
+			.w3-button.active {
+				background-color: gray;
+				color: white;
+			}
+			.sidebar {
+				transition: transform 0.3s ease-in-out;
+			}
+
+			/*update joy*/
+			.sidebar-collapse {
+				width: 20px; /* Adjust the width as needed */
+				background-color: #ffffff;
+				padding: 10px;
+				height: 100%;
+				position: absolute;
+				display: flex;
+				flex-direction: column;
+			}
+			#studentBtn1, #subjectBtn1, #enrollmentBtn1, #reportBtn1 {
+				color: white;
+			}
+			.grid-container-element-save { 
+				display: grid; 
+				grid-template-columns: 1fr 1fr; 
+				grid-gap: 20px; 
+				width: 100%; 
+			} 
+			.grid-child-element-save { 
+				margin: 10px; 
+				text-align: center;
+				border-radius: 5px;
+				padding: 10px;
+			}
+			.grid-child-element-cancel { 
+				margin: 10px; 
+				text-align: center;
+				border-radius: 5px;
+				border: grey solid 1px;
+			}
+			tbody tr :hover,#enrolledTable > tr :hover{
+				cursor: pointer;
+				background-color: #f5f5f5;
+			}
+			tbody tr:hover td,#enrolledTable > tr:hover td {
+				background-color: #f5f5f5; /* Change the background color of all td elements within the hovered row */
+			}
+			.dt-input {
+				border: 1px solid #aaa;
+				border-radius: 3px;
+				padding: 5px;
+				background-color: transparent;
+				color: inherit;
+			}
+	</style>
+	<body>
+		<div class="header w3-bar w3-container w3-padding">
+			<a href="/" style="text-decoration: none;"><h3 class="text">SCHOOL v1.0</h3></a>
+		</div>
+			<div id="alertLoggedIn" class="w3-panel w3-animate-top" style="position: fixed; top:2%; left: 50%; transform: translate(-50%, -50%);">
+				<%if(message!=""){ %>
+					<div class="w3-amber w3-round-large w3-container w3-padding">
+						<%=message%>
+					</div>
+				<% }%>
+			</div>
+		<div class="d-flex align-items-center" style="background-color: white; border-bottom: #CCCCCC solid 1px; justify-content:space-between;width: 100%; height: 48px;">
+			<div class="hide-button" onclick="showSidebar()">
+				<div class="w3-button w3-hover-gray w3-round-large hide-image" style="width:65px;">
+					<a>Menu</a>
+				</div>
+			</div>
+			<p style="font-size: large;"><b>Student</b></p>
+			<a href="/logout">
+				<div style="float:right;cursor: pointer;">
+					<div class="w3-button w3-hover-gray w3-round-large hide-image" style="width:50px;">
+						<img src="/assets/css/logout.png">
+					</div>
+				</div>
+			</a>
+
+		</div>
+		
+		<div class="sidebar-collapse" id="hideSidebar">
+			
+		</div>
+	
+		<div class="sidebar" id="showSidebar" style="display:block;">
+			<a id="studentBtn1" class="w3-button w3-hover-gray w3-round-large" href="/">
+				Student
+			</a>
+			<a id="subjectBtn1" class="w3-button w3-hover-gray w3-round-large" href="/subjectslist">
+				Subject	
+			</a>
+			<a id="enrollmentBtn1" class="w3-button w3-hover-gray w3-round-large" href="/enrollmentslist">
+				Enrollment
+			</a>
+			<a id="reportBtn1" class="w3-button w3-hover-gray w3-round-large" href="/reportslist">
+				Report
+			</a>
+			
+			<div class="hide-button" onclick="hideSidebar()">
+				<div class="w3-center w3-button w3-hover-gray w3-round-large hide-image">
+					<img src="/assets/css/hide.png">
+				</div>
+			</div>
+		</div>
+		
+		
+		<!--CONTENTS-->
+		<div id="studentContent" class="grid-child-element green" style=" display: block;margin-left:15vw;margin-top: 5vh;position: absolute;z-index: 1;min-width: 80%;">
+			<div class="w3-row">
+				<!--DATATABLE-->
+				<div class="w3-half w3-container w3-padding">
+					<div class="w3-card-4 w3-round-large w3-container w3-padding">
+						<table id="studentTable" class="w3-table-all">
+							<thead>
+								<tr>
+									<% for (let h of header) { %>
+										<th><%= h.toUpperCase() %></th>
+									<% } %>
+								</tr>
+							</thead>
+							<tbody id="tbody">
+								<% for (let s of subjects) { %>
+								<tr onclick="pushAndRemoveRow(this)">
+									<td><%= s.edpcode %></td>
+									<td><%= s.subjectcode %></td>
+									<td><%= s.time %></td>
+									<td><%= s.days %></td>
+									<td><%= s.room %></td>
+								</tr>
+								<% } %>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="w3-half w3-container w3-padding">
+					<div class="w3-card-4 w3-round-large w3-container w3-padding">
+						<div style="padding: 5px 0; gap: 0.4rem;" class="d-flex flex-sm-fill">
+							<input type="text" name="studentId" id="studentId" placeholder="Student Id" class="dt-input">
+							<input type="button" onclick="search()" value="Search" class="w3-button w3-white w3-border w3-hover-light-gray w3-padding-small" style="width: unset;">
+						</div>
+						<div>
+							<% if(Object.keys(student).length != 0){ %>
+								<p id="idno"><%= student[0].idno %></p>
+								<p><%= student[0].lastname + ", " + student[0].firstname %></p>
+							<% } %>
+						</div>
+						<div>
+							<label>Enrolled list</label>
+							<table id="enrolledTable" class="w3-table-all">
+								<% for (let e of enrolled) { %>
+									<tr onclick="pushAndRemoveRow(this)">
+										<td><%= e.edpcode %></td>
+										<td><%= e.subjectcode %></td>
+										<td><%= e.time %></td>
+										<td><%= e.days %></td>
+										<td><%= e.room %></td>
+									</tr>
+								<% } %>
+							</table>
+							<div class="d-flex justify-content-center">
+								<button class="grid-child-element-save w3-button w3-blue w3-hover-grey" onclick="saveData()">Save</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<script src="/assets/js/bootstrap.bundle.min.js"></script>
+	</body>
+	<script>
+		$(document).ready( function () {
+			$('#studentTable').DataTable({
+				"ordering": false
+			});
+		} );
+
+		let student = <%- JSON.stringify(student) %>;
+		if(Object.keys(student).length) document.getElementById('studentId').value = student[0].idno;
+		
+		function showSidebar() {
+			var sidebar = document.getElementById('showSidebar');
+			sidebar.style.display = "block";
+		}
+		function hideSidebar() {
+			var sidebar = document.getElementById('showSidebar');
+			sidebar.style.display = "none";
+		}
+		function logoutBtn() {
+			window.location.href = "/logout";
+		}
+		setTimeout(function() {
+			var alertLoggedIn = document.getElementById('alertLoggedIn');
+			alertLoggedIn.style.display = 'none';
+		}, 3000); // 2000 milliseconds = 2 seconds
+		
+		function pushAndRemoveRow(row) {
+			let clonedRow = row.cloneNode(true);
+			let destinationTableId  = row.parentNode.id === 'tbody' ? 'enrolledTable' : 'tbody';
+			let destinationTable = document.getElementById(destinationTableId);
+			destinationTable.appendChild(clonedRow);
+			
+			// Remove the original row from the source table
+			row.parentNode.removeChild(row);
+		}
+
+
+		function saveData() {
+			const table = document.getElementById('enrolledTable');
+			const rows = table.getElementsByTagName('tr');
+			const subject_edpcode_arr = [];
+			const idno = "hatdog"//document.getElementById('idno').innerHTML;
+			for (let i = 0; i < rows.length; i++) { // Start from index 0 to because we have no header
+				const cells = rows[i].getElementsByTagName('td')
+				subject_edpcode_arr.push(cells[0].innerText)
+			}
+			const data = {
+					'idno': idno,
+					'subject_edpcode_arr': subject_edpcode_arr
+				}
+			const xhr = new XMLHttpRequest();
+			xhr.open('POST', '/enrollmentslist/save', true);
+			xhr.setRequestHeader('Content-type', 'application/json');
+
+			fetch('/enrollmentslist/save', {
+				method: 'post',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+		}
+
+		
+		function search(){
+			const student = document.getElementById('studentId').value
+			student ? window.location.href=`/enrollmentslist/${student}` : false
+		}
+			
+
+
+
+	</script>
+</html>
